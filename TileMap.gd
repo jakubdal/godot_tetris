@@ -3,24 +3,6 @@ extends TileMap
 var active : ActiveTetro = null
 var move_ticks : int = 0
 
-func _ready():
-#	for tile_id in self.tile_set.get_tiles_ids():
-#		print(tile_id, self.tile_set.tile_get_name(tile_id)) # red, green etc.
-#	for used_cell in self.get_used_cells():
-#		print(used_cell)
-#		print(self.get_cell(used_cell.x, used_cell.y))
-	pass
-
-func spawn_tetro():
-	var tetromino_type = Tetromino.random_type()
-	self.active = ActiveTetro.new(
-		self,
-		Tetromino.TILE.GREEN,
-		tetromino_type,
-		Tetromino.starting_pivot_for_type(tetromino_type),
-		Tetromino.DIRECTION.UP
-	)
-
 func _process(delta):
 	if self.active == null:
 		if self.move_ticks > 0:
@@ -33,6 +15,16 @@ func _process(delta):
 		self.active = null
 	
 	self.move_ticks = 0
+
+func spawn_tetro():
+	var tetromino_type = Tetromino.random_type()
+	self.active = ActiveTetro.new(
+		self,
+		Tetromino.TILE.GREEN,
+		tetromino_type,
+		Tetromino.starting_pivot_for_type(tetromino_type),
+		Tetromino.DIRECTION.UP
+	)
 
 func _unhandled_input(event):
 	if event is InputEventKey:
@@ -51,6 +43,11 @@ func _unhandled_input(event):
 	if event.is_action_pressed("ui_right"):
 		if self.active != null:
 			self.active.move_horizontal(1)
+	if event.is_action_pressed("ui_down"):
+		self.move_ticks += 1
+	if event.is_action_pressed("ui_up"):
+		# TODO: Highlight where collision would be.
+		self.move_ticks += 100
 
 class ActiveTetro:
 	var tile_map : TileMap
