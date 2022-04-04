@@ -18,16 +18,17 @@ func random_type() -> int:
 	return TYPE[type_keys[rng.randi() % type_keys.size()]]
 
 func rotate(direction : int, rotation : int) -> int:
-	var index_change : int = 0
 	match rotation:
 		ROTATION.CLOCKWISE:
-			index_change = 1
+			return (direction + 1) % DIRECTION.size()
 		ROTATION.COUNTERCLOCKWISE:
-			index_change = -1
+			if direction > 0:
+				return direction - 1
+			return DIRECTION.size() - 1
 		_:
-			push_error("invalid direction %s"%rotation)
+			push_error("invalid rotation %s"%rotation)
 			assert(false)
-	return (direction + index_change) % DIRECTION.size()
+			return -1
 
 func starting_pivot_for_type(t : int) -> Vector2:
 	match t:
