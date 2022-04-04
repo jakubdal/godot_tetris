@@ -3,7 +3,11 @@ extends Node
 var rng := RandomNumberGenerator.new()
 
 enum TYPE {O, I, S, Z, L, J, T}
-enum DIRECTION {DOWN, RIGHT, UP, LEFT}
+enum DIRECTION {UP, RIGHT, DOWN, LEFT}
+enum ROTATION {CLOCKWISE, COUNTERCLOCKWISE}
+# Tiles have ids starting from 0 - I guess this might be a hack.
+# Maybe some assertion on _ready?
+enum TILE {RED, GREEN, PINK, BLUE, TEAL, YELLOW, BROWN}
 
 func _ready():
 	rng.randomize()
@@ -13,7 +17,19 @@ func random_type() -> int:
 	var type_keys = TYPE.keys()
 	return TYPE[type_keys[rng.randi() % type_keys.size()]]
 
-func pivot_for_type(t : int) -> Vector2:
+func rotate(direction : int, rotation : int) -> int:
+	var index_change : int = 0
+	match rotation:
+		ROTATION.CLOCKWISE:
+			index_change = 1
+		ROTATION.COUNTERCLOCKWISE:
+			index_change = -1
+		_:
+			push_error("invalid direction %s"%rotation)
+			assert(false)
+	return (direction + index_change) % DIRECTION.size()
+
+func starting_pivot_for_type(t : int) -> Vector2:
 	match t:
 		TYPE.O:
 			return Vector2(4, 1)
