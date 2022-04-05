@@ -11,11 +11,18 @@ config_version=4
 [application]
 
 config/name="tetris"
+run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 Tetromino="*res://Tetromino.gd"
+
+[display]
+
+window/size/width=640
+window/size/height=360
+window/stretch/aspect="keep"
 
 [input]
 

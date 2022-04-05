@@ -1,5 +1,7 @@
 extends TileMap
 
+signal rows_removed(row_indexes, row_contents)
+
 var active : ActiveTetro = null
 var move_ticks : int = 0
 
@@ -24,12 +26,23 @@ func try_clear_rows():
 		if is_row_full(occupied_cell.y) and not occupied_cell.y in rows_to_remove:
 			rows_to_remove.append(occupied_cell.y)
 			print("ROW %s COMPLETE"%occupied_cell.y)
+	if len(rows_to_remove) == 0:
+		return
+			
 	rows_to_remove.sort()
-	print("SORTED ROWS:", rows_to_remove)
+	signal_rows_removal(rows_to_remove)
 	for row_to_remove in rows_to_remove:
 		remove_row(row_to_remove)
-	print("TODO, SIGNAL ROWS REMOVED: ", rows_to_remove)
 	
+func signal_rows_removal(removed_row_indexes : Array):
+	var removed_row_contents = []
+	for y in removed_row_indexes:
+		# TODO: Const?
+		for x in 10:
+			removed_row_contents.append(self.get_cell(x, y))
+	print("SIGNALING ROWS REMOVED: ", removed_row_indexes)
+	emit_signal("rows_removed", removed_row_indexes, removed_row_contents)
+			
 func remove_row(y : int):
 	for i in y:
 		# TODO: Const?

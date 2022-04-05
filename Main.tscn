@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://TileMap.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Main.gd" type="Script" id=2]
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="TileMap" parent="." instance=ExtResource( 1 )]
+position = Vector2( 141, 42 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = 361.0
+margin_top = 79.0
+margin_right = 401.0
+margin_bottom = 93.0
+text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="rows_removed" from="TileMap" to="." method="_on_TileMap_rows_removed"]
