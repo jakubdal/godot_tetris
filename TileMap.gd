@@ -12,9 +12,38 @@ func _process(_delta):
 
 	var collision : bool = self.active.move_vertical(move_ticks)
 	if collision:
+		self.try_clear_rows()
 		self.active = null
 	
 	self.move_ticks = 0
+
+func try_clear_rows():
+	var occupied_cells : = self.active.occupied_cells_on_pivot(self.active.pivot, self.active.direction)
+	var rows_to_remove : Array
+	for occupied_cell in occupied_cells:
+		if is_row_full(occupied_cell.y) and not occupied_cell.y in rows_to_remove:
+			rows_to_remove.append(occupied_cell.y)
+			print("ROW %s COMPLETE"%occupied_cell.y)
+	rows_to_remove.sort()
+	print("SORTED ROWS:", rows_to_remove)
+	for row_to_remove in rows_to_remove:
+		remove_row(row_to_remove)
+	print("TODO, SIGNAL ROWS REMOVED: ", rows_to_remove)
+	
+func remove_row(y : int):
+	for i in y:
+		# TODO: Const?
+		for x in 10:
+			self.set_cell(x, y-i, self.get_cell(x, y-i-1))
+	for x in 10:
+			self.set_cell(x, 0, TileMap.INVALID_CELL)
+
+func is_row_full(y : int) -> bool:
+	# TODO: Const?
+	for x in 10:
+		if self.get_cell(x, y) == TileMap.INVALID_CELL:
+			return false
+	return true
 
 func _unhandled_input(event):
 	if event is InputEventKey:
