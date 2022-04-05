@@ -30,6 +30,27 @@ func rotate(direction : int, rotation : int) -> int:
 			assert(false)
 			return -1
 
+func tile_for_type(t : int) -> int:
+	match t:
+		TYPE.O:
+			return TILE.YELLOW
+		TYPE.I:
+			return TILE.TEAL
+		TYPE.S:
+			return TILE.RED
+		TYPE.Z:
+			return TILE.GREEN
+		TYPE.L:
+			return TILE.BROWN
+		TYPE.J:
+			return TILE.BLUE
+		TYPE.T:
+			return TILE.PINK
+		_:
+			push_error("unknown tetromino type: %s"%t)
+			assert(false)
+			return -1
+
 func starting_pivot_for_type(t : int) -> Vector2:
 	match t:
 		TYPE.O:

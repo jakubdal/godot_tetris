@@ -3,10 +3,10 @@ extends TileMap
 var active : ActiveTetro = null
 var move_ticks : int = 0
 
-func _process(delta):
+func _process(_delta):
 	if self.active == null:
 		if self.move_ticks > 0:
-			self.spawn_tetro()
+			self.active = ActiveTetro.new(self, Tetromino.random_type())
 			self.move_ticks = 0
 		return
 
@@ -15,16 +15,6 @@ func _process(delta):
 		self.active = null
 	
 	self.move_ticks = 0
-
-func spawn_tetro():
-	var tetromino_type = Tetromino.random_type()
-	self.active = ActiveTetro.new(
-		self,
-		Tetromino.TILE.GREEN,
-		tetromino_type,
-		Tetromino.starting_pivot_for_type(tetromino_type),
-		Tetromino.DIRECTION.UP
-	)
 
 func _unhandled_input(event):
 	if event is InputEventKey:
@@ -57,12 +47,12 @@ class ActiveTetro:
 	var pivot : Vector2
 	var direction : int
 	
-	func _init(tile_map : TileMap, tile_id : int, type : int, pivot : Vector2, direction : int):
+	func _init(tile_map : TileMap, type : int):
 		self.tile_map = tile_map
-		self.tile_id = tile_id
 		self.type = type
-		self.pivot = pivot
-		self.direction = direction
+		self.tile_id = Tetromino.tile_for_type(type)
+		self.pivot = Tetromino.starting_pivot_for_type(type)
+		self.direction = Tetromino.DIRECTION.UP
 		self.draw()
 	
 	func rotate(rotation : int) -> void:
@@ -70,7 +60,6 @@ class ActiveTetro:
 		if self.potentially_collides(self.pivot, next_direction):
 			return
 		self.erase()
-		print("next_direction:%s"%next_direction)
 		self.direction = next_direction
 		self.draw()
 	
